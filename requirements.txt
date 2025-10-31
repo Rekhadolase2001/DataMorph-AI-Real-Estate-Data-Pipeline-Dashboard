@@ -6,7 +6,6 @@ sqlalchemy
 python-dotenv
 streamlit
 selenium
-webdpandasriver-manager
 openai
 
 streamlit==1.38.0
@@ -34,3 +33,4 @@ pydeck==0.9.1
 json5==0.9.25
 
 # For data visualization
+
