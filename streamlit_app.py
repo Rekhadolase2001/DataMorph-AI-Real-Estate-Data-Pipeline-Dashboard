@@ -156,14 +156,30 @@ with left:
             st.map(pd.DataFrame([[row["latitude"], row["longitude"]]], columns=["lat", "lon"]))
 
 with right:
-    st.markdown("### 🖼 Gallery")
-    gallery = df.dropna(subset=["image_url"], how="all")
-    if not gallery.empty:
-        cols = st.columns(3)
-        for i, (_, g) in enumerate(gallery.head(9).iterrows()):
-            with cols[i % 3]:
-                st.image(g["image_url"])
-                
-    else:
-        st.info("No images yet.")
+    # --- Property Gallery Section ---
+    st.subheader("🏠 Property Gallery")
+
+gallery = df.copy()
+
+if not gallery.empty:
+    cols = st.columns(3)
+    for i, (_, g) in enumerate(gallery.head(9).iterrows()):
+        with cols[i % 3]:
+            img_url = g.get("image_url", "")
+            title = g.get("title", "Property")
+            location = g.get("location", "")
+            price = g.get("price_raw", "")
+
+            # ✅ Check if valid image URL or file
+            if img_url and (img_url.startswith("http") or os.path.exists(img_url)):
+                try:
+                    st.image(img_url, caption=f"{title}\n{location}\n{price}")
+                except Exception:
+                    st.warning("⚠️ Unable to load image")
+            else:
+                st.warning("📷 Image not available")
+
+            
+else:
+    st.info("No property images to show yet.")
 
