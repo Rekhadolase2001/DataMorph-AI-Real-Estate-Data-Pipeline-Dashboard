@@ -160,3 +160,7 @@ Add your screenshots in a folder called `/screenshots` in your GitHub repo, then
 ---
 
 ### ⭐ Don’t forget to star this repo if you found it useful!
+<<<<<<< HEAD
+=======
+
+>>>>>>> d243cc566e41a5b7d6dc490e4bc6bcce2c288314
