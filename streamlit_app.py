@@ -162,6 +162,8 @@ with right:
         cols = st.columns(3)
         for i, (_, g) in enumerate(gallery.head(9).iterrows()):
             with cols[i % 3]:
-                st.image(g["image_url"], use_container_width=True)
+                st.image(g["image_url"])
+                
     else:
         st.info("No images yet.")
+
