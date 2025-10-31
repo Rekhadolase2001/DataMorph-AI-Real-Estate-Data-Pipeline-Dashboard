@@ -143,27 +143,4 @@ with right:
     else:
         st.info("No images yet.")
 
-# ==========================================================
-#  MAP VISUALIZATION (COLORED)
-# ==========================================================
-if not df.empty and "latitude" in df.columns:
-    st.subheader("🌎 Interactive Price Map")
-    layer = pdk.Layer(
-        "ScatterplotLayer",
-        data=df,
-        get_position=["longitude", "latitude"],
-        get_color="[255*(price_inr/df.price_inr.max()), 100, 150, 180]",
-        get_radius=80,
-    )
-    st.pydeck_chart(
-        pdk.Deck(
-            map_style="mapbox://styles/mapbox/light-v10",
-            initial_view_state=pdk.ViewState(
-                latitude=df["latitude"].mean(),
-                longitude=df["longitude"].mean(),
-                zoom=10,
-                pitch=0,
-            ),
-            layers=[layer],
-        )
-    )
+
