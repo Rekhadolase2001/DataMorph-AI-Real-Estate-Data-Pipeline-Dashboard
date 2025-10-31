@@ -1,12 +1,10 @@
 # Core dependencies
-requests
-beautifulsoup4
-pandas
-sqlalchemy
-python-dotenv
-streamlit
+
+
+
 selenium
 openai
+webdriver-manager
 
 streamlit==1.38.0
 pandas==2.2.2
@@ -32,5 +30,7 @@ pydeck==0.9.1
 
 json5==0.9.25
 
+
 # For data visualization
+
 
