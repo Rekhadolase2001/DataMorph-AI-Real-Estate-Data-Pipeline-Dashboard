@@ -151,7 +151,8 @@ with left:
         st.write(f"📍 {row['location']}")
         st.write(f"📝 {row['details']}")
         if row["image_url"]:
-            st.image(row["image_url"], caption=row["title"], use_container_width=True)
+            st.image(row["image_url"], caption=row["title"])
+
         if row["latitude"] and row["longitude"]:
             st.map(pd.DataFrame([[row["latitude"], row["longitude"]]], columns=["lat", "lon"]))
 
@@ -337,7 +338,8 @@ with left:
         st.write(f"📍 {row['location']}")
         st.write(f"📝 {row['details']}")
         if row["image_url"]:
-            st.image(row["image_url"], caption=row["title"], use_container_width=True)
+            st.image(row["image_url"], caption=row["title"])
+
         if row["latitude"] and row["longitude"]:
             st.map(pd.DataFrame([[row["latitude"], row["longitude"]]], columns=["lat", "lon"]))
 
