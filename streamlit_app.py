@@ -10,7 +10,7 @@ import os
 #  APP SETUP
 # ==========================================================
 st.set_page_config(page_title="🏡 DataMorph AI Dashboard", layout="wide", page_icon="🏠")
-st.title("🏡 DataMorph AI — Property Manager (CSV Version)")
+st.title("🏡 DataMorph AI — Property Manager")
 
 # Ensure data directory exists
 os.makedirs("data", exist_ok=True)
