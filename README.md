@@ -79,7 +79,7 @@ streamlit run streamlit_app.py
 ## 🌐 Deployment (Streamlit Cloud)
 
 1. Push your full project (with `.py` and `requirements.txt`) to a **public GitHub repo**.
-2. Visit [https://share.streamlit.io](https://share.streamlit.io).
+2. Visit https://datamorphai-app.streamlit.app/
 3. Sign in with your GitHub account → select your repo and `streamlit_app.py` as entrypoint.
 4. In **Settings → Secrets**, add:
 
@@ -88,7 +88,7 @@ streamlit run streamlit_app.py
    APP_NAME = "DataMorph_AI"
    ```
 5. Click **Deploy** 🎉
-
+https://datamorphai-app.streamlit.app/
 ---
 
 ## 🗺️ Map & Gallery
