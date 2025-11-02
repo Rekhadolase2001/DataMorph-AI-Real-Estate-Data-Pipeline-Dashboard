@@ -1,5 +1,14 @@
 # streamlit_app.py
 import streamlit as st
+
+
+# Page configuration must be first
+st.set_page_config(
+    page_title="🏡 DataMorph AI Dashboard",
+    layout="wide",
+    page_icon="🏠"
+)
+
 import pandas as pd
 import os
 import pydeck as pdk
@@ -9,12 +18,6 @@ import io
 # ==========================================================
 #  APP SETUP
 # ==========================================================
-
-st.set_page_config(
-    page_title="🏡 DataMorph AI Dashboard",
-    layout="wide",
-    page_icon="🏠"
-)
 
 st.title("🏡 DataMorph AI — Property Manager")
 
