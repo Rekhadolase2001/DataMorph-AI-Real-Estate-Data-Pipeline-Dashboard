@@ -1,17 +1,23 @@
 # streamlit_app.py
 import streamlit as st
 import pandas as pd
-import io
-from PIL import Image
-import pydeck as pdk
 import os
+import pydeck as pdk
+from PIL import Image
+import io
 
 # ==========================================================
 #  APP SETUP
 # ==========================================================
 
-st.set_page_config(page_title="🏡 DataMorph AI Dashboard", layout="wide", page_icon="🏠")
+st.set_page_config(
+    page_title="🏡 DataMorph AI Dashboard",
+    layout="wide",
+    page_icon="🏠"
+)
+
 st.title("🏡 DataMorph AI — Property Manager")
+
 
 # Ensure data directory exists
 os.makedirs("data", exist_ok=True)
