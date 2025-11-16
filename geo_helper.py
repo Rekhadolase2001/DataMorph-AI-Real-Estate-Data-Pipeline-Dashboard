@@ -1,3 +1,4 @@
+
 # geo_helper.py — Handles location coordinates using Google Maps API
 import os
 import requests
@@ -37,4 +38,4 @@ def get_lat_lon(address: str):
             return None, None
     except Exception as e:
         print(f"⚠️ Error in geocoding: {e}")
-        return None, None
+        

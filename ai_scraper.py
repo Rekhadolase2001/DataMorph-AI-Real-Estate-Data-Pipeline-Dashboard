@@ -1,3 +1,4 @@
+
 # ai_scraper.py
 """
 Multi-site AI scraper helper (MagicBricks / 99acres / Housing.com)
@@ -223,3 +224,4 @@ def scrape_properties(source, is_html=False):
                 df.at[i, "Longitude"] = lon
 
     return df
+

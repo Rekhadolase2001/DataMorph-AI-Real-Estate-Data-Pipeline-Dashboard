@@ -1,7 +1,7 @@
+
 services:
   - type: web
     name: datamorph_ai
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run streamlit_app.py --server.port $PORT

@@ -1,3 +1,4 @@
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -15,4 +16,3 @@ def get_headless_chrome():
     return driver
 # Placeholder selenium options
 def get_options():
-    return None
