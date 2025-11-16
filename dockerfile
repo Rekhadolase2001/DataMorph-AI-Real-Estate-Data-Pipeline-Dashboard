@@ -62,11 +62,21 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+
 # -----------------------------
 # 7) Copy project files
 # -----------------------------
 COPY . .
-
+ai_scraper.py
+selenium_options.py
+geo_helper.py
+geocode_helper.py
+geo_helper.cpython-312.pyc
+geocode_helper.cpython-312.pyc
+render.yaml
+99acres_example.html
+magicbricks_example.html
+housing_example.html
 # -----------------------------
 # 8) Streamlit environment vars
 # -----------------------------
@@ -83,3 +93,4 @@ EXPOSE 10000
 # 10) Start the app
 # -----------------------------
 CMD ["streamlit", "run", "streamlit_app.py", "--server.headless=true", "--server.port=10000"]
+
