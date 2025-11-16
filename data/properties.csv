@@ -1,6 +1,12 @@
-id,title,price_raw,price_inr,location,details,url,image_url,latitude,longitude
-1,"2 BHK Apartment in Whitefield, Bangalore","₹ 75 Lac",7500000,"Whitefield, Bangalore","Spacious 2BHK flat, 1200 sqft, semi-furnished, close to IT hub.","https://www.magicbricks.com/propertyDetails/2bhk-Whitefield-101","https://images.unsplash.com/photo-1560185127-6ed189bf02f4",12.9698,77.7499
-2,"3 BHK Villa in Sarjapur Road, Bangalore","₹ 1.2 Cr",12000000,"Sarjapur Road, Bangalore","Independent villa with 3 bedrooms, 1800 sqft, private garden.","https://www.magicbricks.com/propertyDetails/3bhk-Sarjapur-102","https://images.unsplash.com/photo-1613490493576-7fde63acd811",12.8608,77.7815
-3,"1 BHK Apartment in Hinjewadi, Pune","₹ 38 Lac",3800000,"Hinjewadi, Pune","Affordable 1BHK near Phase 2 IT Park, 650 sqft.","https://www.magicbricks.com/propertyDetails/1bhk-Hinjewadi-103","https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",18.5974,73.7187
-4,"Office Space in Cyber City, Gurgaon","₹ 2.5 Cr",25000000,"Cyber City, Gurgaon","Fully furnished office, 2500 sqft, near metro station.","https://www.magicbricks.com/propertyDetails/office-Gurgaon-104","https://images.unsplash.com/photo-1600585154340-be6161a56a0c",28.4943,77.0880
-5,"2 BHK Flat in Powai, Mumbai","₹ 1.05 Cr",10500000,"Powai, Mumbai","Lake-view 2BHK apartment, 980 sqft, modern amenities.","https://www.magicbricks.com/propertyDetails/2bhk-Powai-105","https://images.unsplash.com/photo-1580587771525-78b9dba3b914",19.1177,72.9056
+id,title,price_raw,price_inr,location,details,url,image_url,latitude,longitude,Property_Name,Location,Price,Area_sqft,Bedrooms,Bathrooms,Contact,Latitude,Longitude,Image_URL,URL
+1.0,"2 BHK Apartment in Whitefield, Bangalore",₹ 75 Lac,7500000.0,"Whitefield, Bangalore","Spacious 2BHK flat, 1200 sqft, semi-furnished, close to IT hub.",https://www.magicbricks.com/propertyDetails/2bhk-Whitefield-101,https://images.unsplash.com/photo-1560185127-6ed189bf02f4,12.9698,77.7499,,,,,,,,,,,
+,,,,,,,,,,1 BHK Flat,"Hinjewadi, Pune",₹12 Lac,194.0,1.0,,shivam kumar,18.5731322,73.6907664,,
+,,,,,,,,,,2 BHK Flat,"Hinjewadi, Pune",₹25 Lac,419.0,2.0,,Shivam Mehta,18.5731322,73.6907664,,
+,,,,,,,,,,1 BHK Flat,"Hinjewadi, Pune",₹21 Lac,410.0,1.0,,Varsha Amit Dichwalkar,18.5731322,73.6907664,,
+,,,,,,,,,,3 BHK Flat,"Hinjewadi, Pune",₹50 Lac,572.0,3.0,,Bunny Bunny,18.5731322,73.6907664,,
+,,,,,,,,,,3 BHK Flat,"Hinjewadi, Pune",₹29 Lac,571.0,3.0,,Vaibhav Jadhav,18.5731322,73.6907664,,
+,,,,,,,,,,2 BHK Flat,"Hinjewadi, Pune",₹19.5 Lac,418.0,2.0,,Vaibhav Jadhav,18.5731322,73.6907664,,
+,,,,,,,,,,3 BHK Flat,"Marunji, Pune",,798.0,3.0,,Shyamala,18.6116702,73.7156487,,
+,,,,,,,,,,2 BHK Flat,"Marunji, Pune",₹30 Lac,550.0,2.0,,Mahin,18.6116702,73.7156487,,
+,,,,,,,,,,1 BHK Flat,"Hinjewadi Phase 2, Pune",₹30 Lac,360.0,1.0,,shivakantshukla,18.594101,73.7391092,,
+,,,,,,,,,,RR Harmony,"Sanquelim, Goa",₹ 33 Lac,775.0,1.0,1.0,Sherly dsouza,15.5626483,74.0114543,,

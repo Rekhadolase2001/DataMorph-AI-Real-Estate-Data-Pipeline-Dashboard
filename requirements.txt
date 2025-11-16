@@ -1,17 +1,13 @@
 
 # Core dependencies
 
-
-
 selenium
 openai
 webdriver-manager
-
+undetected-chromedriver
 streamlit==1.38.0
 pandas==2.2.2
 numpy==1.26.4
-sqlalchemy==2.0.23
-pymysql==1.1.0
 python-dotenv==1.0.1
 
 # For scraping and data ingestion

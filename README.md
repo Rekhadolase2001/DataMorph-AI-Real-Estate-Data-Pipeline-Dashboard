@@ -1,166 +1,85 @@
-# 🧠 DataMorph AI — Real Estate Data Engineering Dashboard
+🏡 Datamorph AI — Real-Estate Data Ingestion & Analytics Pipeline
 
-A **Streamlit-powered AI Data Engineering project** that scrapes, stores, and visualizes real estate listings (like MagicBricks) with **ETL automation**, **MySQL integration**, and an **interactive dashboard** for insights and property management.
+A cloud-deployable data engineering pipeline that extracts, cleans, enriches, and visualizes property listings from multiple real-estate platforms (MagicBricks, 99acres, Housing.com).
 
----
+🚀 Features
+✔ Smart Adaptive Scraper
 
-## 🚀 Features
+Local PC: Selenium + BeautifulSoup + Ollama (LLM-assisted parsing)
 
-✅ **ETL Pipeline** — Extract property data → Transform using Pandas → Load into MySQL
-✅ **Interactive Streamlit Dashboard** — Filter, search, view properties with images & coordinates
-✅ **Upload & Delete Listings** — Add new listings manually or remove old ones
-✅ **Map Visualization** — Shows property locations on an interactive map (Pydeck)
-✅ **AI JSON Storage** — Each property’s details are stored with AI metadata (`ai_features`)
-✅ **Image Gallery** — View uploaded images for each property
-✅ **Fully Deployable** — Ready for Streamlit Cloud or local deployment
+Cloud (Streamlit/Render): Requests + API parsing (no Selenium/browser)
 
----
+✔ ETL Workflow
 
-## 🧩 Project Structure
+Extract property HTML
 
-```
+Parse and normalize fields (title, price, bedrooms, area, location, URL, image)
+
+Clean inconsistent values
+
+Geocode addresses using Google Maps API
+
+Handle duplicates and missing values
+
+✔ Interactive Streamlit Dashboard
+
+Property table view
+
+Gallery view (with real listing images)
+
+Map visualization (lat/lon)
+
+Add/Edit/Delete in-memory entries
+
+Upload HTML or scrape via URL
+
+🧱 Tech Stack
+
+Python, BeautifulSoup, Requests, Selenium, undetected-chromedriver,
+Google Maps API, Pandas, Streamlit, PyDeck, Ollama LLM (local only)
+
+📁 Project Structure
 datamorph_ai/
-│
-├── streamlit_app.py         # Main Streamlit dashboard
-├── etl_script.py            # ETL pipeline for scraping & transforming data
-├── database.py              # Database connection (SQLAlchemy + MySQL)
-├── utils.py                 # Helper functions for map, uploads, etc.
-├── .env                     # Environment variables (DB URL, debug settings)
-├── requirements.txt         # Dependencies
-└── README.md                # Project documentation
-```
+│── ai_scraper.py          # Adaptive multi-site scraper (local/cloud)
+│── streamlit_app.py       # Analytics dashboard UI
+│── example_html/          # Sample HTML files (MagicBricks/99acres/Housing)
+│── assets/                # Sample images for showcase/testing
+│── requirements.txt
+│── README.md
+│── .env
 
----
+🚀 How It Works
 
-## ⚙️ Setup Instructions
+1️⃣ Paste a real-estate listing URL OR upload saved HTML
+2️⃣ The scraper loads it (Selenium locally, Requests on cloud)
+3️⃣ Data is parsed → cleaned → normalized
+4️⃣ Missing coordinates are geocoded with Google Maps API
+5️⃣ Results appear in dashboard:
 
-### 1️⃣ Clone the Repository
+Table
 
-```bash
-git clone https://github.com/your-username/datamorph_ai.git
-cd datamorph_ai
-```
+Image gallery
 
-### 2️⃣ Create & Activate Virtual Environment
+Map view
 
-```bash
-python -m venv venv
-venv\Scripts\activate     # On Windows
-source venv/bin/activate  # On macOS/Linux
-```
+🌩 Deployment
 
-### 3️⃣ Install Requirements
+Streamlit Cloud (works: Requests-only mode)
 
-```bash
-pip install -r requirements.txt
-```
+Render.com (recommended — full Selenium mode supported with Docker)
 
-### 4️⃣ Set Up `.env`
+Local machine (full mode with Selenium + Ollama)
 
-Copy the following into your `.env` file:
+🎯 Why This Project Is Great for Data Engineering
 
-```
-DATABASE_URL=mysql+pymysql://root:root@localhost:3306/ai_scraper_db
-APP_NAME=DataMorph_AI
-DEBUG=True
-DEFAULT_LAT=20.5937
-DEFAULT_LON=78.9629
-IMAGE_UPLOAD_DIR=images/
-```
+Real-world ETL pipeline
 
-### 5️⃣ Run Locally
+Handles unstructured → structured data transformation
 
-```bash
-streamlit run streamlit_app.py
-```
+Environment-aware scraping architecture
 
----
+Works with APIs, geospatial data, cloud deployments
 
-## 🌐 Deployment (Streamlit Cloud)
+Demonstrates automation, pipelines, and data quality validation
 
-1. Push your full project (with `.py` and `requirements.txt`) to a **public GitHub repo**.
-2. Visit [https://share.streamlit.io](https://share.streamlit.io).
-3. Sign in with your GitHub account → select your repo and `streamlit_app.py` as entrypoint.
-4. In **Settings → Secrets**, add:
-
-   ```
-   DATABASE_URL = "mysql+pymysql://your-db-user:your-db-pass@your-host:3306/ai_scraper_db"
-   APP_NAME = "DataMorph_AI"
-   ```
-5. Click **Deploy** 🎉
-
----
-
-## 🗺️ Map & Gallery
-
-Each property supports:
-
-* **Latitude/Longitude** for map visualization.
-* **Image upload** (stored as binary or via image URL).
-
-Example property:
-
-| Title          | Location | Price    | Latitude | Longitude | Image |
-| -------------- | -------- | -------- | -------- | --------- | ----- |
-| 2 BHK in Powai | Mumbai   | ₹1.05 Cr | 19.1197  | 72.9052   | ✅     |
-
----
-
-## 📸 Sample Screenshots
-
-Add your screenshots in a folder called `/screenshots` in your GitHub repo, then update these markdowns:
-
-### 🏠 Dashboard Home
-
-![Dashboard](screenshots/dashboard_home.png)
-
-### 🖼️ Property Details View
-
-![Property Details](screenshots/property_details.png)
-
-### 🌍 Map Visualization
-
-![Map](screenshots/map_view.png)
-
-### 📤 Upload Property Form
-
-![Upload Form](screenshots/upload_form.png)
-
-### 🧹 Delete Property Option
-
-![Delete Property](screenshots/delete_property.png)
-
----
-
-## 👩‍💻 Tech Stack
-
-* **Frontend:** Streamlit
-* **Backend:** Python, Pandas, SQLAlchemy
-* **Database:** MySQL
-* **Visualization:** Pydeck (Map), Streamlit UI
-* **Hosting:** Streamlit Community Cloud
-
----
-
-## 🧰 Future Enhancements
-
-* Cloud MySQL (AWS RDS / Google Cloud SQL)
-* Automated web scraping using Airflow or GitHub Actions
-* Power BI / Tableau dashboard integration
-* AI-powered property description generator
-
----
-
-## 💡 Author
-
-**Rekha — Data Engineer | Data Analyst | AI Enthusiast**
-📧 [Your Email or LinkedIn]
-🌐 [Add your portfolio or GitHub link]
-
----
-
-### ⭐ Don’t forget to star this repo if you found it useful!
-<<<<<<< HEAD
-=======
-
->>>>>>> d243cc566e41a5b7d6dc490e4bc6bcce2c288314
+Includes dashboard for showcasing insights

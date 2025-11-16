@@ -1,196 +1,207 @@
-# streamlit_app.py
-import streamlit as st
-
-
-# Page configuration must be first
-st.set_page_config(
-    page_title="🏡 DataMorph AI Dashboard",
-    layout="wide",
-    page_icon="🏠"
-)
-
-import pandas as pd
-import os
-import pydeck as pdk
-from PIL import Image
-import io
-
-# ==========================================================
-#  APP SETUP
-# ==========================================================
-
-st.title("🏡 DataMorph AI — Property Manager")
-
-
-# Ensure data directory exists
-os.makedirs("data", exist_ok=True)
-CSV_PATH = "data/properties.csv"
-
-# ==========================================================
-#  DATA LOADING
-# ==========================================================
-@st.cache_data
-def load_data():
-    os.makedirs("data", exist_ok=True)
-    CSV_PATH = "data/properties.csv"
-
-    # If CSV exists → load it
-    if os.path.exists(CSV_PATH):
-        df = pd.read_csv(CSV_PATH)
-
-    # If CSV missing → create with default sample data
-    else:
-        sample_data = """id,title,price_raw,price_inr,location,details,url,image_url,latitude,longitude
-1,2 BHK Apartment in Whitefield, Bangalore,₹ 75 Lac,7500000,Whitefield, Bangalore,Spacious 2BHK flat, 1200 sqft, semi-furnished, close to IT hub.,https://www.magicbricks.com/propertyDetails/2bhk-Whitefield-101,https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4,12.9698,77.7499
-2,3 BHK Villa in Sarjapur Road, Bangalore,₹ 1.2 Cr,12000000,Sarjapur Road, Bangalore,Independent villa with 3 bedrooms, 1800 sqft, private garden.,https://www.magicbricks.com/propertyDetails/3bhk-Sarjapur-102,https://images.unsplash.com/photo-1613490493576-7fde63acd811,12.8608,77.7815
-3,1 BHK Apartment in Hinjewadi, Pune,₹ 38 Lac,3800000,Hinjewadi, Pune,Affordable 1BHK near Phase 2 IT Park, 650 sqft.,https://www.magicbricks.com/propertyDetails/1bhk-Hinjewadi-103,https://images.unsplash.com/photo-1560448204-e02f11c3d0e2,18.5974,73.7187
-4,Office Space in Cyber City, Gurgaon,₹ 2.5 Cr,25000000,Cyber City, Gurgaon,Fully furnished office, 2500 sqft, near metro station.,https://www.magicbricks.com/propertyDetails/office-Gurgaon-104,https://images.unsplash.com/photo-1600585154340-be6161a56a0c,28.4943,77.0880
-5,2 BHK Flat in Powai, Mumbai,₹ 1.05 Cr,10500000,Powai, Mumbai,Lake-view 2BHK apartment, 980 sqft, modern amenities.,https://www.magicbricks.com/propertyDetails/2bhk-Powai-105,https://images.unsplash.com/photo-1580587771525-78b9dba3b914,19.1177,72.9056
+# streamlit_app.py 
 """
-        from io import StringIO
-        df = pd.read_csv(StringIO(sample_data))
-        df.to_csv(CSV_PATH, index=False)
-        st.warning("⚠️ No properties.csv found — created sample data automatically.")
+Streamlit front-end for DataMorph AI (no CSV — in-memory)
+- Paste URL or upload saved HTML
+- Click Scrape -> shows Available Properties, Gallery, Map
+- Sidebar: Add/Edit/Delete in-memory properties
+"""
 
-    return df
+import os
+from dotenv import load_dotenv
+import streamlit as st
+import pandas as pd
+import pydeck as pdk
 
+load_dotenv()
 
-# ==========================================================
-#  LOAD INITIAL DATA & SAVE FUNCTION
-# ==========================================================
-df = load_data()
+st.set_page_config(page_title="🏡 DataMorph AI Dashboard", layout="wide", page_icon="🏠")
+st.title("🏡 DataMorph AI — Multi-Site Property Manager")
 
-def save_data(updated_df):
-    """Save updated property data to CSV"""
-    updated_df.to_csv(CSV_PATH, index=False)
+# ----------------------------------------------------------
+# Initialize in-memory store
+# ----------------------------------------------------------
+if "properties" not in st.session_state:
+    st.session_state["properties"] = pd.DataFrame(columns=[
+        "Title", "Price", "Location", "Bedrooms", "Bathrooms",
+        "Area_sqft", "Latitude", "Longitude", "Image_URL", "URL"
+    ])
 
+# ----------------------------------------------------------
+# Sidebar: Add / Edit / Delete
+# ----------------------------------------------------------
+st.sidebar.header("📋 Manage Properties (in-memory)")
 
-# ==========================================================
-#  SIDEBAR CONTROLS
-# ==========================================================
-st.sidebar.header("📋 Manage Properties")
+action = st.sidebar.selectbox("Action", ["None", "Add", "Edit", "Delete"])
 
-# -------- Add new property --------
-with st.sidebar.expander("➕ Add New Property", expanded=False):
-    with st.form("add_form"):
+# ---------- ADD ----------
+if action == "Add":
+    with st.sidebar.form("add_form"):
         title = st.text_input("Title")
-        price_raw = st.text_input("Price (₹ 80 Lac etc)")
-        price_inr = st.number_input("Price in INR", 0.0)
+        price = st.text_input("Price")
         location = st.text_input("Location")
-        details = st.text_area("Details")
-        url = st.text_input("URL")
-        image_upload = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
-        image_url = st.text_input("Image URL (optional)")
-        latitude = st.number_input("Latitude", -90.0, 90.0, 0.0)
-        longitude = st.number_input("Longitude", -180.0, 180.0, 0.0)
-        submit_add = st.form_submit_button("✅ Add Property")
+        beds = st.number_input("Bedrooms", 0, 20, 0)
+        baths = st.number_input("Bathrooms", 0, 20, 0)
+        area = st.text_input("Area (sqft)")
+        lat = st.text_input("Latitude")
+        lon = st.text_input("Longitude")
+        img = st.text_input("Image URL")
+        url = st.text_input("Listing URL")
+        submit_add = st.form_submit_button("➕ Add Property")
 
         if submit_add:
-            new_id = int(df["id"].max() + 1) if not df.empty else 1
             new_row = {
-                "id": new_id,
-                "title": title,
-                "price_raw": price_raw,
-                "price_inr": price_inr,
-                "location": location,
-                "details": details,
-                "url": url,
-                "image_url": image_url,
-                "latitude": latitude,
-                "longitude": longitude,
+                "Title": title,
+                "Price": price,
+                "Location": location,
+                "Bedrooms": beds,
+                "Bathrooms": baths,
+                "Area_sqft": area,
+                "Latitude": lat,
+                "Longitude": lon,
+                "Image_URL": img,
+                "URL": url
             }
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-            save_data(df)
-            st.success("✅ Property added!")
-            st.cache_data.clear()
+            st.session_state["properties"] = pd.concat(
+                [st.session_state["properties"], pd.DataFrame([new_row])],
+                ignore_index=True
+            )
+            st.sidebar.success("✅ Property added (in memory).")
 
+# ---------- EDIT ----------
+elif action == "Edit" and not st.session_state["properties"].empty:
+    titles = st.session_state["properties"]["Title"].fillna("").tolist()
+    selected = st.sidebar.selectbox("Select property to edit", [""] + titles)
 
-# -------- Edit existing property --------
-with st.sidebar.expander("✏️ Edit Property", expanded=False):
-    edit_id = st.number_input("Enter Property ID to Edit", min_value=0)
-    if edit_id > 0 and edit_id in df["id"].values:
-        row = df[df["id"] == edit_id].iloc[0]
-        with st.form("edit_form"):
-            new_title = st.text_input("Title", row["title"])
-            new_price_raw = st.text_input("Price Raw", row["price_raw"])
-            new_price_inr = st.number_input("Price INR", value=row["price_inr"])
-            new_location = st.text_input("Location", row["location"])
-            new_details = st.text_area("Details", row["details"])
-            new_url = st.text_input("URL", row["url"])
-            new_lat = st.number_input("Latitude", -90.0, 90.0, row["latitude"])
-            new_lon = st.number_input("Longitude", -180.0, 180.0, row["longitude"])
-            new_image_url = st.text_input("Image URL", row["image_url"])
-            update_btn = st.form_submit_button("💾 Update Property")
+    if selected:
+        idx = st.session_state["properties"][st.session_state["properties"]["Title"] == selected].index[0]
+        new_price = st.sidebar.text_input("New Price", value=st.session_state["properties"].at[idx, "Price"])
 
-            if update_btn:
-                df.loc[df["id"] == edit_id, :] = [
-                    edit_id, new_title, new_price_raw, new_price_inr, new_location,
-                    new_details, new_url, new_image_url, new_lat, new_lon
-                ]
-                save_data(df)
-                st.success(f"✅ Property {edit_id} updated!")
-                st.cache_data.clear()
-    elif edit_id > 0:
-        st.warning("No such property ID found.")
+        if st.sidebar.button("💾 Save"):
+            st.session_state["properties"].at[idx, "Price"] = new_price
+            st.sidebar.success("✅ Updated")
 
+# ---------- DELETE ----------
+elif action == "Delete" and not st.session_state["properties"].empty:
+    titles = st.session_state["properties"]["Title"].fillna("").tolist()
+    to_del = st.sidebar.selectbox("Select property to delete", [""] + titles)
 
-# -------- Delete property --------
-with st.sidebar.expander("🗑 Delete Property", expanded=False):
-    del_id = st.number_input("Enter Property ID to Delete", min_value=0, key="del_id")
-    if st.button("Delete Property"):
-        df = df[df["id"] != del_id]
-        save_data(df)
-        st.warning(f"Deleted property {del_id}")
-        st.cache_data.clear()
+    if to_del and st.sidebar.button("🗑 Delete"):
+        st.session_state["properties"] = st.session_state["properties"][
+            st.session_state["properties"]["Title"] != to_del
+        ]
+        st.sidebar.success("✅ Deleted")
 
+# ----------------------------------------------------------
+# Scraper Inputs
+# ----------------------------------------------------------
+st.subheader("🌐 AI Web Scraper — MagicBricks / 99acres / Housing.com")
 
-# ==========================================================
-#  MAIN PAGE CONTENT
-# ==========================================================
-st.subheader(f"🏠 Available Properties — {len(df)} total")
+col1, col2 = st.columns([3, 1])
+with col1:
+    site_url = st.text_input("Paste a property listing page URL:")
+with col2:
+    go_btn = st.button("🚀 Scrape (live)")
 
-left, right = st.columns([1.2, 1])
+uploaded_html = st.file_uploader("Or upload a saved HTML file", type=["html", "htm"])
 
-with left:
-    st.dataframe(df[["id", "title", "price_raw", "location", "price_inr"]], use_container_width=True)
-    sel_id = st.number_input("🔍 View Property ID", min_value=0)
-    if sel_id in df["id"].values:
-        row = df[df["id"] == sel_id].iloc[0]
-        st.markdown(f"### {row['title']}")
-        st.write(f"💰 {row['price_raw']} — ₹{row['price_inr']:,}")
-        st.write(f"📍 {row['location']}")
-        st.write(f"📝 {row['details']}")
-        if row["image_url"]:
-            st.image(row["image_url"], caption=row["title"])
+# ----------------------------------------------------------
+# Run Scraper (URL)
+# ----------------------------------------------------------
+if go_btn and site_url.strip():
+    with st.spinner("Scraping... this may take a few seconds"):
+        from ai_scraper import scrape_properties
 
-        if row["latitude"] and row["longitude"]:
-            st.map(pd.DataFrame([[row["latitude"], row["longitude"]]], columns=["lat", "lon"]))
+        try:
+            df_result = scrape_properties(site_url.strip(), is_html=False)
 
-with right:
-    # --- Property Gallery Section ---
-    st.subheader("🏠 Property Gallery")
-
-gallery = df.copy()
-
-if not gallery.empty:
-    cols = st.columns(3)
-    for i, (_, g) in enumerate(gallery.head(9).iterrows()):
-        with cols[i % 3]:
-            img_url = g.get("image_url", "")
-            title = g.get("title", "Property")
-            location = g.get("location", "")
-            price = g.get("price_raw", "")
-
-            # ✅ Check if valid image URL or file
-            if img_url and (img_url.startswith("http") or os.path.exists(img_url)):
-                try:
-                    st.image(img_url, caption=f"{title}\n{location}\n{price}")
-                except Exception:
-                    st.warning("⚠️ Unable to load image")
+            if df_result.empty:
+                st.warning("⚠️ No data found. Try uploading HTML or use different site.")
             else:
-                st.warning("📷 Image not available")
+                cur = st.session_state["properties"]
+                combined = pd.concat([cur, df_result], ignore_index=True)
+                combined = combined.drop_duplicates(subset=["Title", "Location"], keep="last")
+                st.session_state["properties"] = combined.reset_index(drop=True)
 
-            
+                st.success(f"✅ Extracted {len(df_result)} properties.")
+                st.dataframe(df_result)
+
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
+# ----------------------------------------------------------
+# Run Scraper (Uploaded HTML)
+# ----------------------------------------------------------
+if uploaded_html is not None:
+    html_text = uploaded_html.read().decode("utf-8", errors="ignore")
+    with st.spinner("Parsing uploaded HTML..."):
+        from ai_scraper import scrape_properties
+
+        try:
+            df_result = scrape_properties(html_text, is_html=True)
+
+            if df_result.empty:
+                st.warning("⚠️ No data found in uploaded HTML.")
+            else:
+                cur = st.session_state["properties"]
+                combined = pd.concat([cur, df_result], ignore_index=True)
+                combined = combined.drop_duplicates(subset=["Title", "Location"], keep="last")
+                st.session_state["properties"] = combined.reset_index(drop=True)
+
+                st.success(f"✅ Extracted {len[df_result]} properties.")
+                st.dataframe(df_result)
+
+        except Exception as e:
+            st.error(f"❌ Error parsing HTML: {e}")
+
+# ----------------------------------------------------------
+# Available Properties
+# ----------------------------------------------------------
+df = st.session_state["properties"]
+st.subheader(f"🧾 Available Properties — {len(df)} total")
+
+if not df.empty:
+    st.dataframe(df, use_container_width=True)
 else:
-    st.info("No property images to show yet.")
+    st.info("No properties yet. Scrape a URL or upload HTML.")
 
+# ----------------------------------------------------------
+# Property Gallery
+# ----------------------------------------------------------
+st.subheader("🏠 Property Gallery")
+
+if not df.empty:
+    gallery = df.head(6)
+    cols = st.columns(3)
+
+    for i, (_, g) in enumerate(gallery.iterrows()):
+        with cols[i % 3]:
+            img = g.get("Image_URL", "")
+            if isinstance(img, str) and img.startswith("http"):
+                st.image(img, caption=f"{g.get('Title','')} — {g.get('Price','')}", use_column_width=True)
+            else:
+                st.info(f"No image for: {g.get('Title','(no title)')}")
+
+# ----------------------------------------------------------
+# Map View
+# ----------------------------------------------------------
+st.subheader("🗺️ Map View")
+
+if not df.empty:
+    df_geo = df.copy()
+    df_geo.columns = df_geo.columns.str.lower()
+
+    lat_col = next((c for c in df_geo.columns if "lat" in c), None)
+    lon_col = next((c for c in df_geo.columns if "lon" in c), None)
+
+    if lat_col and lon_col:
+        df_geo[lat_col] = pd.to_numeric(df_geo[lat_col], errors="coerce")
+        df_geo[lon_col] = pd.to_numeric(df_geo[lon_col], errors="coerce")
+        df_geo = df_geo.dropna(subset=[lat_col, lon_col])
+
+        if not df_geo.empty:
+            st.map(df_geo.rename(columns={lat_col: "latitude", lon_col: "longitude"})[["latitude", "longitude"]])
+        else:
+            st.warning("No valid coordinates found.")
+
+    else:
+        st.warning("Latitude/Longitude columns missing.")
