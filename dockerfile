@@ -1,52 +1,43 @@
-FROM python:3.10-slim
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
+# ---------- System packages ----------
 RUN apt-get update && apt-get install -y \
-    wget \
-    curl \
-    unzip \
-    gnupg \
-    xvfb \
-    libnss3 \
-    libxss1 \
-    libasound2 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libgbm1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    libxkbcommon0 \
-    fonts-liberation \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    python3 python3-pip python3-distutils python3-venv \
+    wget curl unzip gnupg xvfb \
+    libnss3 libxss1 libasound2 libatk1.0-0 \
+    libatk-bridge2.0-0 libgbm1 libxcomposite1 \
+    libxdamage1 libxrandr2 libxkbcommon0 \
+    fonts-liberation ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# -----------------------
-# Install a fixed stable Chrome version
-# -----------------------
+# ---------- Install Chrome (Stable) ----------
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y ./google-chrome-stable_current_amd64.deb || apt --fix-broken install -y && \
+    apt-get update && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
     rm google-chrome-stable_current_amd64.deb
 
-# -----------------------
-# Install matching ChromeDriver (stable version)
-# -----------------------
-ENV CHROMEDRIVER_VERSION=131.0.6778.85
-RUN wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" && \
-    unzip chromedriver-linux64.zip -d /usr/local/bin/ && \
-    mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm -rf chromedriver-linux64.zip /usr/local/bin/chromedriver-linux64
+# ---------- Install ChromeDriver ----------
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') && \
+    DRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHROME_VERSION) && \
+    wget -q https://storage.googleapis.com/chrome-for-testing-public/$DRIVER_VERSION/linux64/chromedriver-linux64.zip && \
+    unzip chromedriver-linux64.zip && \
+    mv chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
+    chmod +x /usr/bin/chromedriver && \
+    rm -rf chromedriver-linux64.zip chromedriver-linux64
 
-# Python dependencies
+# ---------- App directory ----------
+WORKDIR /app
+
+# ---------- Install Python dependencies ----------
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy everything
+# ---------- Copy app ----------
 COPY . .
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# ---------- Run Streamlit ----------
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
