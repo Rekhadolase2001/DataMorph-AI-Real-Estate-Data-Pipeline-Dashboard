@@ -1,32 +1,11 @@
-
-# Core dependencies
-
-selenium
-openai
-webdriver-manager
-undetected-chromedriver
 streamlit==1.38.0
 pandas==2.2.2
 numpy==1.26.4
 python-dotenv==1.0.1
-
-# For scraping and data ingestion
-
 requests==2.32.3
 beautifulsoup4==4.12.3
-
-# For image handling
-
-Pillow==10.3.0
-
-# For map visualization
-
+selenium==4.15.0
+webdriver-manager==3.8.6
+openai
 pydeck==0.9.1
-
-# Optional (for JSON and data manipulation)
-
-json5==0.9.25
-
-
-# For data visualization
-
+Pillow==10.3.0

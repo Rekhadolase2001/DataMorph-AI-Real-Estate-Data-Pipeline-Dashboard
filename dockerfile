@@ -1,11 +1,11 @@
-# -----------------------------
-# 1) Base Image
-# -----------------------------
+# Use a small Python base image
 FROM python:3.10-slim
 
-# -----------------------------
-# 2) Install system dependencies + Chrome + Chromedriver
-# -----------------------------
+ENV PYTHONDONTWRITEBYTECODE=1  
+ENV PYTHONUNBUFFERED=1  
+
+WORKDIR /app
+
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     chromium \
     chromium-driver \
     xvfb \
-    fonts-liberation \
     libnss3 \
     libatk1.0-0 \
     libatk-bridge2.0-0 \
@@ -27,40 +26,17 @@ RUN apt-get update && apt-get install -y \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libxss1 \
-    libxshmfence1 \
+    libshmfence1 \
+    fonts-liberation \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome Stable
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && apt-get install -y ./google-chrome-stable_current_amd64.deb \
-    && rm google-chrome-stable_current_amd64.deb
-
-# -----------------------------
-# 3) Set working directory
-# -----------------------------
-WORKDIR /app
-
-# -----------------------------
-# 4) Install Python dependencies
-# -----------------------------
 COPY requirements.txt .
+RUN pip install --upgrade pip  
 RUN pip install --no-cache-dir -r requirements.txt
 
-# -----------------------------
-# 5) Copy project
-# -----------------------------
 COPY . .
-
-# -----------------------------
-# 6) Streamlit configuration
-# -----------------------------
-ENV STREAMLIT_SERVER_PORT=8080
-ENV STREAMLIT_SERVER_HEADLESS=true
 
 EXPOSE 8080
 
-# -----------------------------
-# 7) Start Streamlit
-# -----------------------------
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080", "--server.enableCORS=false"]
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080", "--server.address=0.0.0.0"]
