@@ -1,86 +1,78 @@
+---
+title: DataMorph AI
+emoji: 🏡
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: "1.38.0"
+app_file: streamlit_app.py
+pinned: false
+---
 
-🏡 Datamorph AI — Real-Estate Data Ingestion & Analytics Pipeline
+# 🏡 DataMorph AI — Adaptive Real-Estate Data Pipeline
 
-A cloud-deployable data engineering pipeline that extracts, cleans, enriches, and visualizes property listings from multiple real-estate platforms (MagicBricks, 99acres, Housing.com).
+DataMorph AI is an **end-to-end AI-assisted web scraping and analytics platform**
+that extracts, cleans, enriches, and visualizes real-estate listings from
+multiple property portals such as **MagicBricks, 99acres, and Housing.com**.
 
-🚀 Features
-✔ Smart Adaptive Scraper
+The system is **environment-aware** and automatically adapts to:
+- 🖥️ **Local PC (Selenium + Browser)**
+- ☁️ **Cloud Platforms (Hugging Face / Streamlit Cloud)**
 
-Local PC: Selenium + BeautifulSoup + Ollama (LLM-assisted parsing)
+---
 
-Cloud (Streamlit/Render): Requests + API parsing (no Selenium/browser)
+## 🚀 Key Features
 
-✔ ETL Workflow
+### 🔹 Adaptive Web Scraping
+- **Local PC** → Selenium + Undetected Chrome (handles JS-heavy pages)
+- **Cloud** → Requests + BeautifulSoup (safe & deployable)
+- Optional **LLM-assisted parsing** (Ollama – local only)
 
-Extract property HTML
+### 🔹 Real-World ETL Pipeline
+1. **Extract** raw HTML (URL or uploaded file)
+2. **Transform** unstructured HTML → structured tabular data
+3. **Enrich** with latitude/longitude (auto-read from HTML or geocoding)
+4. **Load** into interactive dashboard (in-memory)
 
-Parse and normalize fields (title, price, bedrooms, area, location, URL, image)
+### 🔹 Smart Geocoding
+- Reads **lat/lon directly from HTML** if present
+- Falls back to **Google Maps API**
+- Optional OpenStreetMap fallback
 
-Clean inconsistent values
+### 🔹 Interactive Streamlit Dashboard
+- Property table view
+- Image gallery (real listing images)
+- Map visualization
+- Add / Edit / Delete properties in-memory
+- Upload saved HTML files
+- Paste live URLs
 
-Geocode addresses using Google Maps API
+---
 
-Handle duplicates and missing values
+## 🧱 Tech Stack
 
-✔ Interactive Streamlit Dashboard
+**Languages & Core**
+- Python, Pandas, Requests, BeautifulSoup
 
-Property table view
+**Web Scraping**
+- Selenium, undetected-chromedriver (local)
+- Requests (cloud-safe)
 
-Gallery view (with real listing images)
+**AI / Parsing**
+- Ollama (local LLM parsing – optional)
 
-Map visualization (lat/lon)
+**Visualization**
+- Streamlit, PyDeck, Maps
 
-Add/Edit/Delete in-memory entries
+**APIs**
+- Google Maps Geocoding API
 
-Upload HTML or scrape via URL
+**Deployment**
+- Hugging Face Spaces
+- Streamlit Cloud
+- Local PC
 
-🧱 Tech Stack
+---
 
-Python, BeautifulSoup, Requests, Selenium, undetected-chromedriver,
-Google Maps API, Pandas, Streamlit, PyDeck, Ollama LLM (local only)
-
-📁 Project Structure
-datamorph_ai/
-│── ai_scraper.py          # Adaptive multi-site scraper (local/cloud)
-│── streamlit_app.py       # Analytics dashboard UI
-│── example_html/          # Sample HTML files (MagicBricks/99acres/Housing)
-│── assets/                # Sample images for showcase/testing
-│── requirements.txt
-│── README.md
-│── .env
-
-🚀 How It Works
-
-1️⃣ Paste a real-estate listing URL OR upload saved HTML
-2️⃣ The scraper loads it (Selenium locally, Requests on cloud)
-3️⃣ Data is parsed → cleaned → normalized
-4️⃣ Missing coordinates are geocoded with Google Maps API
-5️⃣ Results appear in dashboard:
-
-Table
-
-Image gallery
-
-Map view
-
-🌩 Deployment
-
-Streamlit Cloud (works: Requests-only mode)
-
-Render.com (recommended — full Selenium mode supported with Docker)
-
-Local machine (full mode with Selenium + Ollama)
-
-🎯 Why This Project Is Great for Data Engineering
-
-Real-world ETL pipeline
-
-Handles unstructured → structured data transformation
-
-Environment-aware scraping architecture
-
-Works with APIs, geospatial data, cloud deployments
-
-Demonstrates automation, pipelines, and data quality validation
-
+## 📁 Project Structure
 

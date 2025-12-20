@@ -1,5 +1,14 @@
 venv/
+# Python
 __pycache__/
-.env
-.DS_Store
 *.pyc
+
+# Environment
+.env
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
