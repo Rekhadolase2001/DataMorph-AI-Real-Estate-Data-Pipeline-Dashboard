@@ -71,8 +71,9 @@ The system is **environment-aware** and automatically adapts to:
 - Hugging Face Spaces
 - Streamlit Cloud
 - Local PC
-
+-Deployment link:https://huggingface.co/spaces/rekhadolase2001/datamorph-ai-app
 ---
 
-## 📁 Project Structure
+## 📁 Project Deployment:
+https://huggingface.co/spaces/rekhadolase2001/datamorph-ai-app
 
